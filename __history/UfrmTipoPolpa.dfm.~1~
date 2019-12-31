@@ -1,0 +1,11 @@
+inherited frmTipoPolpa: TfrmTipoPolpa
+  Caption = 'Cadastro de tipo de polpa'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlDados: TPanel
+    ExplicitWidth = 648
+  end
+  inherited pnlBotoes: TPanel
+    ExplicitWidth = 648
+  end
+end

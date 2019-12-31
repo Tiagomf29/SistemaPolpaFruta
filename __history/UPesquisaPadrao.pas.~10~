@@ -1,0 +1,52 @@
+unit UPesquisaPadrao;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Grids,
+  Vcl.DBGrids, Data.DB, ZAbstractRODataset, ZAbstractDataset, ZDataset,
+  Datasnap.DBClient, Datasnap.Provider, UDM;
+
+type
+  TForm1 = class(TForm)
+    dbgPesquisa: TDBGrid;
+    pnlPesquisa: TPanel;
+    Label1: TLabel;
+    edtPesquisa: TEdit;
+    DTS: TDataSource;
+    QRY: TZQuery;
+    CDS: TClientDataSet;
+    DSP: TDataSetProvider;
+    CDSid: TIntegerField;
+    CDSdescricao: TWideStringField;
+    procedure edtPesquisaChange(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.edtPesquisaChange(Sender: TObject);
+begin
+
+  with QRY do
+  begin
+    close;
+    sql.Clear;
+    SQL.Add('select * from tbproduto where descricao like :descricao');
+    ParamByName('descricao').AsString := edtPesquisa.Text;
+    Open;
+  end;
+  CDS.Close;
+  CDS.Open;
+end;
+
+end.

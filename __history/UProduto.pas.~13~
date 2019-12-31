@@ -1,0 +1,146 @@
+unit UProduto;
+
+interface
+
+uses
+  UBaseCadastro, System.Generics.Collections, UTipoProduto, USabor, UPolpa, ZDataSet;
+
+type
+
+  TProduto = class(TBaseCadastro)
+
+  private
+    FtipoProduto: TTipoProduto;
+    FSabor: TSabor;
+    FTipoPolpa: TPolpa;
+    FPeso: Double;
+    FEstoqueMinimo: Integer;
+    function getPeso: Double;
+    function getSabor: TSabor;
+    function getTipoPolpa: TPolpa;
+    function getTipoProduto: TTipoProduto;
+    procedure setPeso(const Value: Double);
+    procedure setSabor(const Value: TSabor);
+    procedure setTipoPolpa(const Value: TPolpa);
+    procedure setTipoProduto(const Value: TTipoProduto);
+    function getEstoqueMinimo: Integer;
+    procedure setEstoqueMinimo(const Value: Integer);
+
+  public
+    property tipoProduto: TTipoProduto read getTipoProduto write setTipoProduto;
+    property sabor: TSabor read getSabor write setSabor;
+    property tipoPolpa: TPolpa read getTipoPolpa write setTipoPolpa;
+    property peso: Double read getPeso write setPeso;
+    property estoqueMinimo: Integer read getEstoqueMinimo
+      write setEstoqueMinimo;
+
+    procedure cadastrar(produto : TProduto);
+    procedure atualizar(produto : TProduto);
+    procedure excluir(produto : TProduto);
+      
+    function consultaProdutoId(id: Integer): TObjectList<TProduto>;
+
+  end;
+
+implementation
+
+{ TProduto }
+
+procedure TProduto.atualizar(produto: TProduto);
+begin
+  
+end;
+
+procedure TProduto.cadastrar(produto: TProduto);
+begin
+
+end;
+
+function TProduto.consultaProdutoId(id: Integer): TObjectList<TProduto>;
+var
+  lista: TObjectList<TProduto>;
+  produto: TProduto;
+begin
+
+  qry.Close;
+  qry.SQL.Clear;
+  qry.SQL.Add
+    ('select  b.id,concat(b.descricao," - ",d.descricao," - ",e.descricao)as descricao');
+  qry.SQL.Add('from tbproduto b ');
+  qry.SQL.Add('inner join tbsabor d on d.id = b.id_tbsabor ');
+  qry.SQL.Add('inner join tppolpa e on e.id = b.id_tppolpa ');
+  qry.SQL.Add('where b.id=:id');
+  qry.ParamByName('id').AsInteger := id;
+  qry.Open;
+
+  lista := TObjectList<TProduto>.Create;
+
+  while not qry.Eof do
+    begin
+      produto := TProduto.Create;
+      produto.id := qry.FieldByName('id').AsInteger;
+      produto.descricao := qry.FieldByName('descricao').AsString;
+      lista.Add(produto);
+      qry.Next;
+    end;
+
+  Result := lista;
+
+end;
+
+procedure TProduto.excluir(produto: TProduto);
+begin
+
+end;
+
+function TProduto.getEstoqueMinimo: Integer;
+begin
+  Result := FEstoqueMinimo;
+end;
+
+function TProduto.getPeso: Double;
+begin
+  Result := FPeso;
+end;
+
+function TProduto.getSabor: TSabor;
+begin
+  Result := FSabor;
+end;
+
+function TProduto.getTipoPolpa: TPolpa;
+begin
+  Result := FTipoPolpa;
+end;
+
+function TProduto.getTipoProduto: TTipoProduto;
+begin
+  Result := FtipoProduto;
+end;
+
+procedure TProduto.setEstoqueMinimo(const Value: Integer);
+begin
+  FEstoqueMinimo := Value;
+end;
+
+procedure TProduto.setPeso(const Value: Double);
+begin
+  FPeso := Value;
+end;
+
+procedure TProduto.setSabor(const Value: TSabor);
+begin
+  FSabor := Value;
+end;
+
+procedure TProduto.setTipoPolpa(const Value: TPolpa);
+begin
+  FTipoPolpa := Value;
+end;
+
+procedure TProduto.setTipoProduto(const Value: TTipoProduto);
+begin
+  FtipoProduto := Value;
+end;
+
+end.

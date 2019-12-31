@@ -1,0 +1,31 @@
+inherited frmTipoValor: TfrmTipoValor
+  BorderStyle = bsSingle
+  Caption = 'Cadastro de Tipo de Valor'
+  ClientHeight = 436
+  ClientWidth = 505
+  ExplicitTop = 8
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlDados: TPanel
+    Width = 505
+    ExplicitWidth = 658
+  end
+  inherited panel1: TPanel
+    Width = 505
+  end
+  inherited DBGrid1: TDBGrid
+    Top = 141
+    Width = 505
+  end
+  inherited DS: TDataSource
+    AutoEdit = False
+  end
+  inherited CDS: TClientDataSet
+    Active = True
+  end
+  inherited QRY: TZQuery
+    Active = True
+    SQL.Strings = (
+      'select * from tpvalor')
+  end
+end

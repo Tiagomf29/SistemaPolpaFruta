@@ -1,0 +1,156 @@
+unit UBaseCadastro;
+
+interface
+uses
+  System.Generics.Collections, ZDataSet, UPadraoEnumeracao;
+
+type
+
+  TBaseCadastro = class
+
+  private
+    FId        : Integer;
+    FDescricao : String;
+    function getDescricao: String;
+    function getId: Integer;
+    procedure setDescricao(const Value: String);
+    procedure setId(const Value: Integer);
+
+  protected 
+
+    var qry : TZQuery;
+    var lista : TObjectList<TBaseCadastro>;   
+       
+  public
+    property id : Integer read getId write setId;
+    property descricao : String read getDescricao write setDescricao;
+    
+    procedure cadastrar(obj : TBaseCadastro; tabela : TTabelasPadrao);
+    procedure atualizar(obj : TBaseCadastro; tabela : TTabelasPadrao);
+    procedure excluir(obj : TBaseCadastro; tabela : TTabelasPadrao);
+    
+    function consultar(tabela : TTabelasPadrao): TObjectList<TbaseCadastro>;
+    function converteEnumTabela(tabela : TTabelasPadrao): String;
+     
+    constructor create();
+    destructor Destroy();
+     
+  end;
+
+implementation
+uses
+ UDM, System.SysUtils;
+
+
+{ TBaseCadastro }
+
+procedure TBaseCadastro.atualizar(obj : TBaseCadastro; tabela : TTabelasPadrao);
+begin
+  try
+    qry.Close;
+    qry.SQL.Clear;
+    qry.SQL.Add('update '+tabela+' set descricao =:descricao where id =:id');
+    qry.ParamByName('id').AsInteger := obj.id;
+    qry.ExecSQL;
+  finally
+    Destroy;
+  end;  
+end;
+
+procedure TBaseCadastro.cadastrar(obj : TBaseCadastro; tabela : TTabelasPadrao);
+begin
+  try
+    qry.Close;
+    qry.SQL.Clear;
+    qry.SQL.Add('insert into '+tabela+' (descricao) values (:descricao)');
+    qry.ParamByName('descricao').AsString:= obj.descricao;
+    qry.ExecSQL;
+  finally
+    Destroy;
+  end;
+end;
+
+function TBaseCadastro.consultar(tabela : TTabelasPadrao): TObjectList<TbaseCadastro>;
+var
+  obj : TBaseCadastro;
+begin  
+  try
+    qry.Close;
+    qry.SQL.Clear;
+    qry.SQL.Add('select * from '+tabela);
+    qry.Open;
+
+    while not qry.Eof do
+      begin
+        obj := TBaseCadastro.create;        
+        obj.id := qry.FieldByName('id').AsInteger;
+        obj.descricao := qry.FieldByName('descricao').AsString;
+        lista.Add(obj);
+        qry.Next;
+      end;
+
+    Result := lista;
+    
+  finally
+    Destroy;
+  end;
+end;
+
+function TBaseCadastro.converteEnumTabela(tabela: TTabelasPadrao): String;
+begin
+  case tabela of
+    1 : Result:='TBSABOR';
+    2 : Result:='TBVALOR';
+    3 : Result:='TPPOLPA';
+    4 : Result:='TPPRODUTO';
+    5 : Result:='TBPRODUTO';
+  end;
+end;
+
+constructor TBaseCadastro.create;
+begin
+  qry := TZQuery.Create(nil);
+  qry.Connection := DM.conexao;
+  lista := TObjectList<TBaseCadastro>.Create;
+  
+end;
+
+destructor TBaseCadastro.Destroy;
+begin
+  FreeAndNil(qry);  
+end;
+
+procedure TBaseCadastro.excluir(obj : TBaseCadastro; tabela : TTabelasPadrao);
+begin
+  try
+    qry.Close;
+    qry.SQL.Clear;
+    qry.SQL.Add('delete from '+tabela+' where id =:id');  
+    qry.ParamByName('id').AsInteger := obj.id;
+    qry.ExecSQL;
+  finally
+    Destroy;
+  end;
+end;
+
+function TBaseCadastro.getDescricao: String;
+begin
+  Result := FDescricao;
+end;
+
+function TBaseCadastro.getId: Integer;
+begin
+  Result := FId;
+end;
+
+procedure TBaseCadastro.setDescricao(const Value: String);
+begin
+  FDescricao := Value;
+end;
+
+procedure TBaseCadastro.setId(const Value: Integer);
+begin
+  FId := Value;
+end;
+
+end.

@@ -1,0 +1,49 @@
+unit UTeste;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, UCadastroPadrao, ZAbstractRODataset,
+  ZAbstractDataset, ZDataset, Datasnap.Provider, Data.DB, Datasnap.DBClient,
+  Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls;
+
+type
+  Tfrmteste = class(TfrmCadastroPadrao)
+    procedure btnInserirClick(Sender: TObject);
+  private
+    procedure statusBotoesInsercao(); 
+
+  public
+    
+
+  
+    { Public declarations }
+  end;
+
+var
+  frmteste: Tfrmteste;
+
+implementation
+
+{$R *.dfm}
+
+{ TfrmCadastroPadrao1 }
+
+procedure Tfrmteste.btnInserirClick(Sender: TObject);
+begin
+  statusBotoesInsercao;
+
+end;
+
+procedure Tfrmteste.statusBotoesInsercao;
+begin
+  btnInserir.Enabled    := False;
+  btnSalvar.Enabled     := True;
+  btnAlterar.Enabled    := False;
+  btnCancelar.Enabled   := True;
+  btnExcluir.Enabled    := False;
+  btnSair.Enabled       := False;
+end;
+
+end.

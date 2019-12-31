@@ -1,0 +1,10 @@
+inherited frmteste: Tfrmteste
+  Caption = 'frmteste'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlDados: TPanel
+    inherited edtDescricao: TEdit
+      Visible = False
+    end
+  end
+end

@@ -1,0 +1,60 @@
+unit UfrmTipoValor;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, UCadastroPadrao, Vcl.Grids, Vcl.DBGrids,
+  Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, ZAbstractRODataset, ZAbstractDataset,
+  ZDataset, Datasnap.Provider, Data.DB, Datasnap.DBClient;
+
+type
+  TfrmTipoValor = class(TfrmCadastroPadrao)
+    procedure btnInserirClick(Sender: TObject);
+    procedure btnSalvarClick(Sender: TObject);
+  private
+  var
+    CadastrarNovo: boolean;
+  public
+    { Public declarations }
+  end;
+
+var
+  frmTipoValor: TfrmTipoValor;
+
+implementation
+uses 
+  UTipoValor, UPadraoEnumeracao;
+
+{$R *.dfm}
+
+procedure TfrmTipoValor.btnInserirClick(Sender: TObject);
+begin
+  inherited;
+  CadastrarNovo := True;
+end;
+
+procedure TfrmTipoValor.btnSalvarClick(Sender: TObject);
+var
+  tipoValor: TTipoValor;
+begin
+  inherited;
+  tipoValor := TTipoValor.create;
+  try
+    tipoValor.descricao := edtDescricao.Text;
+    if CadastrarNovo then
+      tipoValor.cadastrar(tipoValor, TTabelasPadrao(TPVALOR))
+    else
+      begin
+        tipoValor.id := CDSid.Value;
+        tipoValor.atualizar(tipoValor, TTabelasPadrao(TPVALOR));
+      end;
+    CDS.Refresh;
+    edtDescricao.Text := '';
+    lblValorCodigo.Caption := '';
+    MessageDlg('Registro Cadastrado com sucesso!', mtInformation, [mbOK], 0);
+  finally
+    FreeAndNil(tipoValor);
+  end;
+end;
+end.

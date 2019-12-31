@@ -1,0 +1,32 @@
+unit UTeste;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, UCadastroPadrao, ZAbstractRODataset,
+  ZAbstractDataset, ZDataset, Datasnap.Provider, Data.DB, Datasnap.DBClient,
+  Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls;
+
+type
+  TfrmCadastroPadrao1 = class(TfrmCadastroPadrao)
+  private
+    
+
+  protected
+    procedure statusBotoesInsercao();Overload;
+
+  public
+
+  
+    { Public declarations }
+  end;
+
+var
+  frmCadastroPadrao1: TfrmCadastroPadrao1;
+
+implementation
+
+{$R *.dfm}
+
+end.

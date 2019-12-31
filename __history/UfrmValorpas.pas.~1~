@@ -1,0 +1,51 @@
+unit UfrmValorpas;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, ZAbstractRODataset, ZAbstractDataset,
+  ZDataset, Datasnap.Provider, Data.DB, Datasnap.DBClient, Vcl.Grids,
+  Vcl.DBGrids, Vcl.StdCtrls, Vcl.Buttons, Vcl.Mask, Vcl.ExtCtrls;
+
+type
+  TfrmValork = class(TForm)
+    pnlDados: TPanel;
+    lblCodigo: TLabel;
+    lblValorCodigo: TLabel;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    ComboBox1: TComboBox;
+    ComboBox2: TComboBox;
+    MaskEdit1: TMaskEdit;
+    Edit1: TEdit;
+    panel1: TPanel;
+    btnSalvar: TBitBtn;
+    btnAlterar: TBitBtn;
+    btnSair: TBitBtn;
+    btnExcluir: TBitBtn;
+    btnCancelar: TBitBtn;
+    btnInserir: TBitBtn;
+    DBGrid1: TDBGrid;
+    DS: TDataSource;
+    CDS: TClientDataSet;
+    CDSid: TSmallintField;
+    CDSdescricao: TWideStringField;
+    DSP: TDataSetProvider;
+    QRY: TZQuery;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmValork: TfrmValork;
+
+implementation
+
+{$R *.dfm}
+
+end.

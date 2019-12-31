@@ -1,0 +1,38 @@
+unit frmSabor;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls,
+  Vcl.Buttons, Vcl.ExtCtrls;
+
+type
+  TFfrmSabor = class(TForm)
+    pnlDados: TPanel;
+    lblCodigo: TLabel;
+    lblDescricao: TLabel;
+    lblValorCodigo: TLabel;
+    edtDescricao: TEdit;
+    Panel1: TPanel;
+    btnSalvar: TBitBtn;
+    btnAlterar: TBitBtn;
+    btnSair: TBitBtn;
+    btnExcluir: TBitBtn;
+    btnCancelar: TBitBtn;
+    btnInserir: TBitBtn;
+    DBGrid1: TDBGrid;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FfrmSabor: TFfrmSabor;
+
+implementation
+
+{$R *.dfm}
+
+end.

@@ -1,0 +1,26 @@
+unit UfrmTipoPolpa;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, UCadastroPadrao, ZAbstractRODataset,
+  ZAbstractDataset, ZDataset, Datasnap.Provider, Data.DB, Datasnap.DBClient,
+  Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls;
+
+type
+  TfrmTipoPolpa = class(TfrmCadastroPadrao)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmTipoPolpa: TfrmTipoPolpa;
+
+implementation
+
+{$R *.dfm}
+
+end.

@@ -1,0 +1,61 @@
+unit UfrmTipoPolpa;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, UCadastroPadrao, ZAbstractRODataset,
+  ZAbstractDataset, ZDataset, Datasnap.Provider, Data.DB, Datasnap.DBClient,
+  Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls;
+
+type
+  TfrmTipoPolpa = class(TfrmCadastroPadrao)
+    procedure btnInserirClick(Sender: TObject);
+    procedure btnSalvarClick(Sender: TObject);
+  private
+  var
+    CadastrarNovo: boolean;
+  public
+    { Public declarations }
+  end;
+
+var
+  frmTipoPolpa: TfrmTipoPolpa;
+
+implementation
+uses 
+  UPolpa, UPadraoEnumeracao;
+
+{$R *.dfm}
+
+procedure TfrmTipoPolpa.btnInserirClick(Sender: TObject);
+begin
+  inherited;
+  CadastrarNovo := True;
+end;
+
+procedure TfrmTipoPolpa.btnSalvarClick(Sender: TObject);
+var
+  polpa: TPolpa;
+begin
+  inherited;
+  polpa := TPolpa.create;
+  try
+    polpa.descricao := edtDescricao.Text;
+    if CadastrarNovo then
+      polpa.cadastrar(polpa, TTabelasPadrao(TBSABOR))
+    else
+      begin
+        polpa.id := CDSid.Value;
+        polpa.atualizar(polpa, TTabelasPadrao(TBSABOR));
+      end;
+    CDS.Refresh;
+    edtDescricao.Text := '';
+    lblValorCodigo.Caption := '';
+    MessageDlg('Registro Cadastrado com sucesso!', mtInformation, [mbOK], 0);
+  finally
+    FreeAndNil(polpa);
+  end;
+end;
+
+end.

@@ -1,0 +1,160 @@
+unit UCadastroPadrao;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls,
+  Vcl.StdCtrls, Vcl.Buttons, Datasnap.Provider, Data.DB, Datasnap.DBClient,
+  ZAbstractRODataset, ZAbstractDataset, ZDataset;
+
+type
+  TfrmCadastroPadrao = class(TForm)
+    pnlDados: TPanel;
+    panel1: TPanel;
+    DBGrid1: TDBGrid;
+    lblCodigo: TLabel;
+    lblDescricao: TLabel;
+    lblValorCodigo: TLabel;
+    edtDescricao: TEdit;
+    btnSalvar: TBitBtn;
+    btnAlterar: TBitBtn;
+    btnSair: TBitBtn;
+    btnExcluir: TBitBtn;
+    btnCancelar: TBitBtn;
+    btnInserir: TBitBtn;
+    DS: TDataSource;
+    CDS: TClientDataSet;
+    CDSid: TSmallintField;
+    CDSdescricao: TWideStringField;
+    DSP: TDataSetProvider;
+    QRY: TZQuery;
+    procedure FormShow(Sender: TObject);
+    procedure btnInserirClick(Sender: TObject);
+    procedure btnSalvarClick(Sender: TObject); virtual;
+    procedure btnAlterarClick(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
+    procedure btnExcluirClick(Sender: TObject);
+    procedure btnSairClick(Sender: TObject);
+    procedure DBGrid1CellClick(Column: TColumn);
+  private
+    
+  protected 
+    procedure statusBotoesInsercao();virtual;
+    procedure statusBotoesNaoInsercao();virtual;   
+    function desejaExcluir(): boolean;
+    
+  public
+    
+  end;
+
+var
+  frmCadastroPadrao: TfrmCadastroPadrao;
+
+implementation
+
+{$R *.dfm}
+
+{ TForm2 }
+
+procedure TfrmCadastroPadrao.btnAlterarClick(Sender: TObject);
+begin
+ if lblValorCodigo.Caption = '' then   
+     MessageDlg('Selecione um registro para que a alteração possa ser realizada!', mtInformation,[mbOK],0)
+ else
+    statusBotoesInsercao;    
+end;
+
+procedure TfrmCadastroPadrao.btnCancelarClick(Sender: TObject);
+begin
+  statusBotoesNaoInsercao;
+end;
+
+procedure TfrmCadastroPadrao.btnExcluirClick(Sender: TObject);
+begin
+ statusBotoesNaoInsercao;
+
+end;
+
+procedure TfrmCadastroPadrao.btnInserirClick(Sender: TObject);
+begin
+  statusBotoesInsercao;
+  edtDescricao.Text := '';
+  lblValorCodigo.Caption := '';
+end;
+
+procedure TfrmCadastroPadrao.btnSairClick(Sender: TObject);
+begin
+  close;
+end;
+
+procedure TfrmCadastroPadrao.btnSalvarClick(Sender: TObject);
+begin
+ if edtDescricao.Text = '' then
+   begin
+     MessageDlg('Informe a descrição!',mtInformation,[mbOK],0);
+     edtDescricao.SetFocus;
+     Abort;
+   end 
+ else  
+   statusBotoesNaoInsercao;
+end;
+
+procedure TfrmCadastroPadrao.DBGrid1CellClick(Column: TColumn);
+begin
+  statusBotoesNaoInsercao;
+  if CDSid.Value <> 0 then
+    begin
+      lblValorCodigo.Caption := IntToStr(CDSid.Value);
+      edtDescricao.Text := CDSdescricao.Value;
+    end;
+end;
+
+function TfrmCadastroPadrao.desejaExcluir: boolean;
+begin
+  if lblValorCodigo.Caption <> '' then
+    begin
+      if MessageDlg('Tem certeza que deseja excluir o registro selecionado?',
+        mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+          begin
+            Result:= True;
+          end
+      else
+       Result:= False; 
+    end
+  else
+    begin
+      MessageDlg('Selecione um registro para que a exclusão possa ser realizada!', mtInformation,[mbOK],0);        
+      Abort;
+    end;
+end;
+
+procedure TfrmCadastroPadrao.FormShow(Sender: TObject);
+begin
+  statusBotoesNaoInsercao();
+end;
+
+procedure TfrmCadastroPadrao.statusBotoesInsercao;
+begin
+  edtDescricao.Enabled  := True;
+  edtDescricao.SetFocus;
+  btnInserir.Enabled    := False;
+  btnSalvar.Enabled     := True;
+  btnAlterar.Enabled    := False;
+  btnCancelar.Enabled   := True;
+  btnExcluir.Enabled    := False;
+  btnSair.Enabled       := False;
+end;
+
+procedure TfrmCadastroPadrao.statusBotoesNaoInsercao;
+begin
+  edtDescricao.Enabled  := False;
+  btnInserir.Enabled    := True;
+  btnSalvar.Enabled     := False;
+  btnAlterar.Enabled    := True;
+  btnCancelar.Enabled   := False;
+  btnExcluir.Enabled    := True;
+  btnSair.Enabled       := True;
+end;
+
+end.

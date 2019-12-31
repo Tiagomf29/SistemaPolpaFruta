@@ -1,0 +1,17 @@
+unit USabor;
+
+interface
+
+type 
+
+TSabor = class()
+
+private
+
+public
+
+end;
+
+implementation
+
+end.

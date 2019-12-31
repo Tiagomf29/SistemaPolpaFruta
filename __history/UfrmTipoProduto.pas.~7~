@@ -1,0 +1,93 @@
+unit UfrmTipoProduto;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, UCadastroPadrao, Vcl.Grids, Vcl.DBGrids,
+  Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, ZAbstractRODataset, ZAbstractDataset,
+  ZDataset, Datasnap.Provider, Data.DB, Datasnap.DBClient,UPadraoEnumeracao;
+
+type
+  TfrmTipoProduto = class(TfrmCadastroPadrao)
+    DS: TDataSource;
+    CDS: TClientDataSet;
+    CDSid: TSmallintField;
+    CDSdescricao: TWideStringField;
+    DSP: TDataSetProvider;
+    QRY: TZQuery;
+    procedure btnInserirClick(Sender: TObject);
+    procedure btnSalvarClick(Sender: TObject);
+    procedure btnAlterarClick(Sender: TObject);
+    procedure btnExcluirClick(Sender: TObject);
+  private
+  var
+    CadastrarNovo: boolean;
+  public
+    { Public declarations }
+  end;
+
+var
+  frmTipoProduto: TfrmTipoProduto;
+
+implementation
+uses
+  UTipoProduto;
+{$R *.dfm}
+
+procedure TfrmTipoProduto.btnAlterarClick(Sender: TObject);
+begin
+  inherited;
+  CadastrarNovo := False;
+end;
+
+procedure TfrmTipoProduto.btnExcluirClick(Sender: TObject);
+var
+  tpProduto: TTipoProduto;
+begin
+  inherited;
+  if desejaExcluir then        
+    begin
+      tpProduto := TTipoProduto.create;
+      try
+        tpProduto.id := CDSid.Value;
+        tpProduto.excluir(tpProduto, TTabelasPadrao(TPPRODUTO));
+        CDS.Refresh;
+        edtDescricao.Text := '';
+        lblValorCodigo.Caption := '';
+        MessageDlg('Registro excluído com sucesso!', mtInformation, [mbOK], 0);
+      finally
+        FreeAndNil(tpProduto);
+      end;
+    end; 
+end;
+
+procedure TfrmTipoProduto.btnInserirClick(Sender: TObject);
+begin
+  inherited;
+  CadastrarNovo := True;
+end;
+
+procedure TfrmTipoProduto.btnSalvarClick(Sender: TObject);
+var
+  tpProduto: TTipoProduto;
+begin
+  inherited;
+  tpProduto := TTipoProduto.create;
+  try
+    tpProduto.descricao := edtDescricao.Text;
+    if CadastrarNovo then
+      tpProduto.cadastrar(tpProduto, TTabelasPadrao(TPPRODUTO))
+    else
+      begin
+        tpProduto.id := CDSid.Value;
+        tpProduto.atualizar(tpProduto, TTabelasPadrao(TPPRODUTO));
+      end;
+    CDS.Refresh;
+    MessageDlg('Registro Cadastrado com sucesso!', mtInformation, [mbOK], 0);
+  finally
+    FreeAndNil(tpProduto);
+  end;
+end;
+
+end.

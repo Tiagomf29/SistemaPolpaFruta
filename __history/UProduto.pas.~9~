@@ -1,0 +1,59 @@
+unit UProduto;
+
+interface
+uses
+ UBaseCadastro, System.Generics.Collections, UTipoProduto, USabor, UPolpa;
+
+type
+
+  TProduto = class(TBaseCadastro)
+
+  private
+    FtipoProduto   : TTipoProduto;
+    FSabor         : TSabor;
+    FTipoPolpa     : TPolpa;
+    FPeso          : Double;
+    FEstoqueMinimo : Integer;                          
+
+  public
+    property tipoProduto  
+    function consultaProdutoId (id : Integer): TObjectList<TProduto>;
+   
+  end;
+
+implementation
+
+{ TProduto }
+
+function TProduto.consultaProdutoId(id: Integer): TObjectList<TProduto>;
+var
+ lista :TObjectList<TProduto>;
+ produto : TProduto;
+begin
+
+  qry.Close;
+  qry.SQL.Clear;
+  qry.SQL.Add('select  b.id,concat(b.descricao," - ",d.descricao," - ",e.descricao)as descricao');
+  qry.SQL.Add('from tbproduto b ');
+  qry.SQL.Add('inner join tbsabor d on d.id = b.id_tbsabor ');
+  qry.SQL.Add('inner join tppolpa e on e.id = b.id_tppolpa ');
+  qry.SQL.Add('where b.id=:id');
+  qry.ParamByName('id').AsInteger := id;
+  qry.Open;
+
+  lista := TObjectList<TProduto>.Create;
+  
+  while not qry.Eof do
+    begin
+      produto := TProduto.create;
+      produto.id := qry.FieldByName('id').AsInteger;
+      produto.descricao := qry.FieldByName('descricao').AsString;
+      lista.Add(produto);
+      qry.Next;
+    end;
+
+ Result := lista;  
+  
+end;
+
+end.

@@ -1,0 +1,11 @@
+inherited frmPesquisaProdutos: TfrmPesquisaProdutos
+  Caption = 'Pesquisa de Produtos'
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited QRY: TZQuery
+    Active = False
+  end
+  inherited CDS: TClientDataSet
+    Active = False
+  end
+end

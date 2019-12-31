@@ -1,0 +1,222 @@
+inherited frmProduto: TfrmProduto
+  Caption = 'Cadastro de produto'
+  ClientHeight = 526
+  ClientWidth = 793
+  ExplicitWidth = 809
+  ExplicitHeight = 565
+  PixelsPerInch = 96
+  TextHeight = 13
+  inherited pnlDados: TPanel
+    Width = 793
+    Height = 201
+    ExplicitWidth = 793
+    ExplicitHeight = 201
+    inherited lblValorCodigo: TLabel
+      Left = 97
+      Width = 133
+      ExplicitLeft = 97
+      ExplicitWidth = 133
+    end
+    object lblTipoProduto: TLabel [3]
+      Left = 8
+      Top = 77
+      Width = 83
+      Height = 13
+      Caption = 'Tipo do produto: '
+    end
+    object lblSabor: TLabel [4]
+      Left = 8
+      Top = 104
+      Width = 32
+      Height = 13
+      Caption = 'Sabor:'
+    end
+    object lblTipoPolpa: TLabel [5]
+      Left = 9
+      Top = 128
+      Width = 68
+      Height = 13
+      Caption = 'Tipo de Polpa:'
+    end
+    object lblPeso: TLabel [6]
+      Left = 9
+      Top = 153
+      Width = 27
+      Height = 13
+      Caption = 'Peso:'
+    end
+    object lblEstoqueMinimo: TLabel [7]
+      Left = 9
+      Top = 177
+      Width = 78
+      Height = 13
+      Caption = 'Estoque M'#237'nimo:'
+    end
+    inherited edtDescricao: TEdit
+      Left = 97
+      Width = 256
+      Height = 24
+      ExplicitLeft = 97
+      ExplicitWidth = 256
+      ExplicitHeight = 24
+    end
+    object cbxTipoProduto: TComboBox
+      Left = 97
+      Top = 74
+      Width = 256
+      Height = 22
+      Style = csOwnerDrawFixed
+      TabOrder = 1
+    end
+    object cbxSabor: TComboBox
+      Left = 97
+      Top = 99
+      Width = 256
+      Height = 22
+      Style = csOwnerDrawFixed
+      TabOrder = 2
+    end
+    object cbxTipoPolpa: TComboBox
+      Left = 97
+      Top = 123
+      Width = 256
+      Height = 22
+      Style = csOwnerDrawFixed
+      TabOrder = 3
+    end
+    object edtPeso: TEdit
+      Left = 97
+      Top = 148
+      Width = 80
+      Height = 21
+      TabOrder = 4
+    end
+    object edtEstoqueMinimo: TEdit
+      Left = 97
+      Top = 173
+      Width = 80
+      Height = 21
+      TabOrder = 5
+    end
+  end
+  inherited panel1: TPanel
+    Top = 201
+    Width = 793
+    ExplicitLeft = 8
+    ExplicitTop = 180
+    ExplicitWidth = 793
+    inherited btnSalvar: TBitBtn
+      Left = 237
+      ExplicitLeft = 237
+    end
+    inherited btnAlterar: TBitBtn
+      Left = 318
+      ExplicitLeft = 318
+    end
+    inherited btnSair: TBitBtn
+      Left = 561
+      ExplicitLeft = 561
+    end
+    inherited btnExcluir: TBitBtn
+      Left = 480
+      ExplicitLeft = 480
+    end
+    inherited btnCancelar: TBitBtn
+      Left = 399
+      ExplicitLeft = 399
+    end
+    inherited btnInserir: TBitBtn
+      Left = 157
+      ExplicitLeft = 157
+    end
+  end
+  inherited DBGrid1: TDBGrid
+    Top = 246
+    Width = 793
+    Height = 280
+  end
+  inherited DS: TDataSource
+    Left = 608
+  end
+  inherited CDS: TClientDataSet
+    Active = True
+    Left = 648
+    object CDSid: TIntegerField
+      Alignment = taLeftJustify
+      DisplayLabel = 'C'#243'digo'
+      FieldName = 'id'
+      Required = True
+    end
+    object CDSdescricao: TWideStringField
+      DisplayLabel = 'Produto'
+      FieldName = 'descricao'
+      Required = True
+      Size = 35
+    end
+    object CDSsabor: TWideStringField
+      DisplayLabel = 'Sabor'
+      FieldName = 'sabor'
+      Required = True
+      Size = 30
+    end
+    object CDSid_tpproduto: TSmallintField
+      Alignment = taLeftJustify
+      FieldName = 'id_tpproduto'
+      Required = True
+      Visible = False
+    end
+    object CDStipoProduto: TWideStringField
+      DisplayLabel = 'Tipo do produto'
+      FieldName = 'tipoProduto'
+      Required = True
+    end
+    object CDSTpPolpa: TWideStringField
+      DisplayLabel = 'Tipo de polpa'
+      FieldName = 'TpPolpa'
+      Required = True
+    end
+    object CDSpeso: TFloatField
+      Alignment = taLeftJustify
+      DisplayLabel = 'Peso'
+      FieldName = 'peso'
+    end
+    object CDSid_tbsabor: TSmallintField
+      Alignment = taLeftJustify
+      FieldName = 'id_tbsabor'
+      Visible = False
+    end
+    object CDSid_tppolpa: TSmallintField
+      Alignment = taLeftJustify
+      FieldName = 'id_tppolpa'
+      Visible = False
+    end
+    object CDSestoque_minimo: TSmallintField
+      Alignment = taLeftJustify
+      DisplayLabel = 'Estoque m'#237'nimo'
+      FieldName = 'estoque_minimo'
+    end
+  end
+  inherited DSP: TDataSetProvider
+    Left = 680
+  end
+  inherited QRY: TZQuery
+    Active = True
+    SQL.Strings = (
+      'select a.id, '
+      '           a.id_tpproduto,'
+      '           b.descricao as tipoProduto, '
+      '           a.descricao, '
+      '           a.peso,'
+      '           a.id_tbsabor, '
+      '           c.descricao as sabor, '
+      '           a.id_tppolpa ,'
+      '           d.descricao as TpPolpa, '
+      '           a.estoque_minimo '
+      '           '
+      '           from tbproduto a'
+      #9#9'   inner join tpproduto b on a.id_tpproduto = b.id'
+      #9#9'   inner join tbsabor c on c.id = a.id_tbsabor'
+      '           inner join tppolpa d on d.id = a.id_tppolpa')
+    Left = 712
+  end
+end
