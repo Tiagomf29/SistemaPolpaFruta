@@ -1,7 +1,5 @@
 inherited frmPesquisaProdutos: TfrmPesquisaProdutos
   Caption = 'Pesquisa de Produtos'
-  ExplicitWidth = 463
-  ExplicitHeight = 360
   PixelsPerInch = 96
   TextHeight = 13
   inherited dbgPesquisa: TDBGrid

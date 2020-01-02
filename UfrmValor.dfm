@@ -57,7 +57,7 @@ inherited frmValor: TfrmValor
     end
     object edtCodigo: TEdit
       Left = 65
-      Top = 45
+      Top = 44
       Width = 41
       Height = 21
       TabOrder = 1

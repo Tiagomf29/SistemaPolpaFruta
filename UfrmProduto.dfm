@@ -2,6 +2,8 @@ inherited frmProduto: TfrmProduto
   Caption = 'Cadastro de produto'
   ClientHeight = 526
   ClientWidth = 793
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   ExplicitWidth = 809
   ExplicitHeight = 565
   PixelsPerInch = 96
@@ -13,9 +15,7 @@ inherited frmProduto: TfrmProduto
     ExplicitHeight = 201
     inherited lblValorCodigo: TLabel
       Left = 97
-      Width = 133
       ExplicitLeft = 97
-      ExplicitWidth = 133
     end
     object lblTipoProduto: TLabel [3]
       Left = 8
@@ -55,10 +55,8 @@ inherited frmProduto: TfrmProduto
     inherited edtDescricao: TEdit
       Left = 97
       Width = 256
-      Height = 24
       ExplicitLeft = 97
       ExplicitWidth = 256
-      ExplicitHeight = 24
     end
     object cbxTipoProduto: TComboBox
       Left = 97
@@ -102,8 +100,7 @@ inherited frmProduto: TfrmProduto
   inherited panel1: TPanel
     Top = 201
     Width = 793
-    ExplicitLeft = 8
-    ExplicitTop = 180
+    ExplicitTop = 201
     ExplicitWidth = 793
     inherited btnSalvar: TBitBtn
       Left = 237
@@ -126,14 +123,15 @@ inherited frmProduto: TfrmProduto
       ExplicitLeft = 399
     end
     inherited btnInserir: TBitBtn
-      Left = 157
-      ExplicitLeft = 157
+      Left = 154
+      ExplicitLeft = 154
     end
   end
   inherited DBGrid1: TDBGrid
     Top = 246
     Width = 793
     Height = 280
+    OnDrawColumnCell = DBGrid1DrawColumnCell
   end
   inherited DS: TDataSource
     Left = 608

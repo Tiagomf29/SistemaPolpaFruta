@@ -4,9 +4,10 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, UCadastroPadrao, Vcl.StdCtrls,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, UCadastroPadrao, Vcl.StdCtrls,System.Generics.Collections,
   ZAbstractRODataset, ZAbstractDataset, ZDataset, Datasnap.Provider, Data.DB,
-  Datasnap.DBClient, Vcl.Grids, Vcl.DBGrids, Vcl.Buttons, Vcl.ExtCtrls;
+  Datasnap.DBClient, Vcl.Grids, Vcl.DBGrids, Vcl.Buttons, Vcl.ExtCtrls,UPolpa, UPadraoEnumeracao, UTipoProduto, 
+  Usabor, Uproduto;
 
 type
   TfrmProduto = class(TfrmCadastroPadrao)
@@ -37,14 +38,21 @@ type
     procedure DBGrid1CellClick(Column: TColumn);
     procedure btnCancelarClick(Sender: TObject);
     procedure btnExcluirClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
   private
+    listaCbxSabor : TObjectList<TSabor>;
+    listaCbxTipoProduto : TObjectList<TTipoProduto>;
+    listaCbxTipoPolpa : TObjectList<TPolpa>;
     procedure carregaComboTipoPolpa();
     procedure carregaComboTipoProduto();
     procedure carregaComboSabor();
     procedure statusBotoesInsercao();override;
     procedure statusBotoesNaoInsercao();override; 
     procedure validacaoPadrao(); override; 
-    procedure carregaDadosGrid();
+    procedure carregaDadosGrid();    
     procedure limparCampos();
 
     var
@@ -57,8 +65,7 @@ var
   frmProduto: TfrmProduto;
 
 implementation
-  uses
-    UPolpa, UPadraoEnumeracao, UTipoProduto, Usabor, Uproduto;
+    
 
 {$R *.dfm}
 
@@ -89,7 +96,9 @@ begin
       CDS.Close;
       CDS.Open;
       MessageDlg('Registro excluído com sucesso!',mtInformation,[mbOK],0);
-    end;
+    end 
+  else
+    limparCampos();  
 end;
 
 procedure TfrmProduto.btnInserirClick(Sender: TObject);
@@ -159,15 +168,18 @@ var
   sabor : TSabor;
   i     : Integer;
 begin
-   sabor := TSabor.create;
+   
+  sabor := TSabor.create;
 
-   for i := 0 to sabor.consultar(TBSABOR).Count-1 do
-     begin
-       sabor.id := sabor.consultar(TBSABOR).Items[i].id;
-       sabor.descricao := sabor.consultar(TBSABOR).Items[i].descricao;
-       cbxSabor.Items.AddObject(sabor.descricao,TSabor(sabor.id));
-     end;
-
+  for i := 0 to sabor.consultar(TBSABOR).Count-1 do
+   begin
+     sabor := TSabor.create;
+     sabor.id := sabor.consultar(TBSABOR).Items[i].id;
+     sabor.descricao := sabor.consultar(TBSABOR).Items[i].descricao;
+     cbxSabor.Items.AddObject(sabor.descricao,TSabor(sabor.id));
+     listaCbxSabor.Add(sabor);
+   end;
+   
 end;
 
 procedure TfrmProduto.carregaComboTipoPolpa;
@@ -177,17 +189,16 @@ var
 begin
 
   TipoPolpa := TPolpa.create;
-  try
-    for i := 0 to TipoPolpa.consultar(TPPOLPA).Count-1 do
-     begin
-       TipoPolpa.id := TipoPolpa.consultar(TPPOLPA).Items[i].id;
-       TipoPolpa.descricao := TipoPolpa.consultar(TPPOLPA).Items[i].descricao;
-       cbxTipoPolpa.Items.AddObject(TipoPolpa.descricao, TPolpa(TipoPolpa.id));
-     end;
-  finally
-    FreeAndNil(TipoPolpa);
-  end;
-    
+
+  for i := 0 to TipoPolpa.consultar(TPPOLPA).Count-1 do
+   begin
+     TipoPolpa := TPolpa.create;
+     TipoPolpa.id := TipoPolpa.consultar(TPPOLPA).Items[i].id;
+     TipoPolpa.descricao := TipoPolpa.consultar(TPPOLPA).Items[i].descricao;
+     cbxTipoPolpa.Items.AddObject(TipoPolpa.descricao, TPolpa(TipoPolpa.id));
+     listaCbxTipoPolpa.Add(TipoPolpa);
+   end;
+       
 end;
 
 procedure TfrmProduto.carregaComboTipoProduto;
@@ -198,66 +209,74 @@ begin
 
   tipoProduto := TTipoProduto.create;
   
-  try
-    for i := 0 to tipoProduto.consultar(TPPRODUTO).Count-1 do
-      begin
-        tipoProduto.id := tipoProduto.consultar(TPPRODUTO).Items[i].id;
-        tipoProduto.descricao := tipoProduto.consultar(TPPRODUTO).Items[i].descricao;
-        cbxTipoProduto.Items.AddObject(tipoProduto.descricao,TTipoProduto(tipoProduto.id));
-      end;
-  finally
-    FreeAndNil(tipoProduto);
-  end;
+  for i := 0 to tipoProduto.consultar(TPPRODUTO).Count-1 do
+    begin
+      tipoProduto := TTipoProduto.create;
+      tipoProduto.id := tipoProduto.consultar(TPPRODUTO).Items[i].id;
+      tipoProduto.descricao := tipoProduto.consultar(TPPRODUTO).Items[i].descricao;
+      cbxTipoProduto.Items.AddObject(tipoProduto.descricao,TTipoProduto(tipoProduto.id));
+      listaCbxTipoProduto.Add(tipoProduto);
+    end;
   
 end;
 
 procedure TfrmProduto.carregaDadosGrid;
 var
   i  : Integer;
-  tipoProduto : TTipoProduto;
-  sabor       : TSabor;
-  tipoPolpa   : TPolpa;
 begin
 
   lblValorCodigo.Caption := IntToStr(CDS.FieldByName('id').AsInteger);
   edtDescricao.Text := CDS.FieldByName('descricao').AsString;
   edtPeso.Text      := FloatToStr(CDS.FieldByName('peso').AsFloat);
   edtEstoqueMinimo.Text := IntToStr(CDS.FieldByName('estoque_minimo').AsInteger);
+  
+  for i := 0 to listaCbxTipoProduto.Count-1 do
+    begin
+      if listaCbxTipoProduto.Items[i].id = CDS.FieldByName('id_tpproduto').AsInteger then
+        cbxTipoProduto.ItemIndex:=i;
+    end;
 
-  tipoProduto := TTipoProduto.create;
-  sabor       := TSabor.create;
-  tipoPolpa   := TPolpa.create;
+  for i := 0 to listaCbxSabor.Count-1 do
+    begin
+      if listaCbxSabor.Items[i].id = CDS.FieldByName('id_tbsabor').AsInteger then
+        cbxSabor.ItemIndex := i;
+    end;
 
-  try
-    for i := 0 to tipoProduto.consultar(TPPRODUTO).Count-1 do
-      begin
-        if tipoProduto.consultar(TPPRODUTO).Items[i].id = CDS.FieldByName('id_tpproduto').AsInteger then
-          cbxTipoProduto.ItemIndex:=i;
-      end;
-
-    for i := 0 to sabor.consultar(TBSABOR).Count-1 do
-      begin
-        if sabor.consultar(TBSABOR).Items[i].id = CDS.FieldByName('id_tbsabor').AsInteger then
-          cbxSabor.ItemIndex := i;
-      end;
-
-    for i := 0 to tipoPolpa.consultar(TPPOLPA).Count-1 do
-      begin    
-        if tipoPolpa.consultar(TPPOLPA).Items[i].id = CDS.FieldByName('id_tppolpa').AsInteger then
-          cbxTipoPolpa.ItemIndex := i;
-      end;
-  finally
-    FreeAndNil(tipoProduto);
-    FreeAndNil(sabor);
-    FreeAndNil(tipoPolpa);
-  end;
-
+  for i := 0 to listaCbxTipoPolpa.Count-1 do
+    begin    
+      if listaCbxTipoPolpa.Items[i].id = CDS.FieldByName('id_tppolpa').AsInteger then
+        cbxTipoPolpa.ItemIndex := i;
+    end;
 end;
 
 procedure TfrmProduto.DBGrid1CellClick(Column: TColumn);
 begin
   inherited;
   carregaDadosGrid();
+end;
+
+procedure TfrmProduto.DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
+  DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  inherited;
+  if (gdSelected in State) then
+    carregaDadosGrid();
+end;
+
+procedure TfrmProduto.FormCreate(Sender: TObject);
+begin
+  inherited;
+  listaCbxSabor := TObjectList<TSabor>.Create;
+  listaCbxTipoProduto := TObjectList<TTipoProduto>.Create;
+  listaCbxTipoPolpa := TObjectList<TPolpa>.Create;
+end;
+
+procedure TfrmProduto.FormDestroy(Sender: TObject);
+begin
+  inherited;
+  FreeAndNil(listaCbxSabor);
+  FreeAndNil(listaCbxTipoProduto);
+  FreeAndNil(listaCbxTipoPolpa);
 end;
 
 procedure TfrmProduto.FormShow(Sender: TObject);
@@ -277,6 +296,7 @@ begin
   cbxSabor.ItemIndex := -1;
   edtPeso.Text := '';
   edtEstoqueMinimo.Text := '';
+  DBGrid1.Options := DBGrid1.Options - [dgAlwaysShowSelection];
 end;
 
 procedure TfrmProduto.statusBotoesInsercao;

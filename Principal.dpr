@@ -20,9 +20,13 @@ uses
   UValor in 'UValor.pas',
   UfrmValor in 'UfrmValor.pas' {frmValor},
   UPesquisaPadrao in 'UPesquisaPadrao.pas' {frmPesquisaPadrao},
-  UFrmPesquisaProdutos in 'UFrmPesquisaProdutos.pas' {frmPesquisaProdutos},
   UGenericRecord in 'UGenericRecord.pas',
-  UfrmProduto in 'UfrmProduto.pas' {frmProduto};
+  UfrmProduto in 'UfrmProduto.pas' {frmProduto},
+  UEntrada in 'UEntrada.pas',
+  UEstoque in 'UEstoque.pas',
+  UInterfaceCrud in 'UInterfaceCrud.pas',
+  UFrmEntrada in 'UFrmEntrada.pas' {frmEntrada},
+  UFrameBotoesCrud in 'UFrameBotoesCrud.pas' {IWFrameBotoesCrud: TFrame};
 
 {$R *.res}
 

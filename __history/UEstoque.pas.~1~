@@ -1,0 +1,52 @@
+unit UEstoque;
+
+interface
+uses
+ UProduto;
+
+type
+
+TEstoque = class
+
+private
+FProduto : TProduto;
+FQuantidade : Integer;
+    function getProduto: Tproduto;
+    function getQuantidade: Integer;
+    procedure setProduto(const Value: Tproduto);
+    procedure setQuantidade(const Value: Integer);
+
+public
+property produto : Tproduto read getProduto write setProduto;
+property quantidade : Integer read getQuantidade write setQuantidade;
+
+end;
+
+implementation
+
+{ TEstoque }
+
+
+{ TEstoque }
+
+function TEstoque.getProduto: Tproduto;
+begin
+  Result := FProduto;
+end;
+
+function TEstoque.getQuantidade: Integer;
+begin
+  Result := FQuantidade;
+end;
+
+procedure TEstoque.setProduto(const Value: Tproduto);
+begin
+  FProduto := Value;
+end;
+
+procedure TEstoque.setQuantidade(const Value: Integer);
+begin
+  FQuantidade := Value;
+end;
+
+end.

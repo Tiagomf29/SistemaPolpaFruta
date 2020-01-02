@@ -5,10 +5,12 @@ inherited frmPolpa: TfrmPolpa
   inherited CDS: TClientDataSet
     Active = True
     object CDSid: TSmallintField
+      DisplayLabel = 'C'#243'digo'
       FieldName = 'id'
       Required = True
     end
     object CDSdescricao: TWideStringField
+      DisplayLabel = 'Descricao'
       FieldName = 'descricao'
       Required = True
       Size = 40

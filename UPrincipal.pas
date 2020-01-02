@@ -51,6 +51,7 @@ type
     procedure ipodePOlpa1Click(Sender: TObject);
     procedure Valor1Click(Sender: TObject);
     procedure N2Click(Sender: TObject);
+    procedure Entrada1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -62,9 +63,20 @@ var
 
 implementation
 uses
-  USabor, UfrmSabor, UfrmTipoProduto, UFrmTipoValor, UFrmPolpa, UFrmValor, UFrmProduto;
+  USabor, UfrmSabor, UfrmTipoProduto, UFrmTipoValor, UFrmPolpa, UFrmValor, UFrmProduto, UFrmEntrada;
 
 {$R *.dfm}
+
+procedure TfrmPrincipal.Entrada1Click(Sender: TObject);
+begin
+  try
+    frmEntrada := TFrmEntrada.create(nil);
+    frmEntrada.showmodal();
+  finally
+    FreeAndNil(frmEntrada);
+  end;
+
+end;
 
 procedure TfrmPrincipal.ipodePOlpa1Click(Sender: TObject);
 begin

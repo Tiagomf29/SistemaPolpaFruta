@@ -1,0 +1,367 @@
+unit UFrmEntrada;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, UframeBotoesCrud, Vcl.Grids,
+  Vcl.DBGrids, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Mask, Data.DB,
+  Datasnap.DBClient;
+
+type
+  TfrmEntrada = class(TForm)
+    pnlDados: TPanel;
+    panel1: TPanel;
+    btnSalvar: TBitBtn;
+    btnAlterar: TBitBtn;
+    btnSair: TBitBtn;
+    btnExcluir: TBitBtn;
+    btnCancelar: TBitBtn;
+    btnInserir: TBitBtn;
+    DBGrid1: TDBGrid;
+    lblCodigo: TLabel;
+    lblValorCodigo: TLabel;
+    lblProduto: TLabel;
+    edtCodigo: TEdit;
+    btnPesquisa: TBitBtn;
+    edtNomeProduto: TEdit;
+    lblDataHora: TLabel;
+    mEData: TMaskEdit;
+    lblQuantidade: TLabel;
+    edtQuantidade: TEdit;
+    lblVaorUnitario: TLabel;
+    edtVlrUnitario: TEdit;
+    Label2: TLabel;
+    edtValorTotal: TEdit;
+    pnlFinalizarCompra: TPanel;
+    btnFinalizarEntrada: TBitBtn;
+    DTS: TDataSource;
+    CDS: TClientDataSet;
+    CDSidProduto: TIntegerField;
+    CDSNomeProduto: TStringField;
+    CDSDataHora: TDateTimeField;
+    CDSValorUnitario: TFloatField;
+    CDSQuantidade: TIntegerField;
+    CDSValorTotal: TFloatField;
+    procedure btnPesquisaClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure btnInserirClick(Sender: TObject);
+    procedure btnSalvarClick(Sender: TObject);
+    procedure btnAlterarClick(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
+    procedure btnExcluirClick(Sender: TObject);
+    procedure btnSairClick(Sender: TObject);
+    procedure edtCodigoChange(Sender: TObject);
+    procedure edtQuantidadeExit(Sender: TObject);
+    procedure edtVlrUnitarioExit(Sender: TObject);
+    procedure DBGrid1CellClick(Column: TColumn);
+    procedure btnFinalizarEntradaClick(Sender: TObject);
+  private
+    procedure statusBotoesInsercao();
+    procedure statusBotoesNaoInsercao();
+    procedure validacaoPadrao(); 
+    procedure carregaDadosGrid();    
+    procedure limparCampos();
+    var
+      CadastrarNovo: boolean;    
+  public
+    { Public declarations }
+  end;
+
+var
+  frmEntrada: TfrmEntrada;
+
+implementation
+  uses
+   UFrmPesquisaProdutos, UGenericRecord, UProduto, Uentrada,System.Generics.Collections;
+
+{$R *.dfm}
+
+procedure TfrmEntrada.btnAlterarClick(Sender: TObject);
+begin
+  if cds.RecordCount > 0 then
+    begin
+      if lblValorCodigo.Caption <> '' then
+        begin
+          CadastrarNovo := False;
+          statusBotoesInsercao;
+        end
+      else
+        MessageDlg('Nenhum registro de entrada selecionado. Verifique!',mtInformation,[mbOK],0);            
+    end
+  else
+    MessageDlg('Nenhum registro de entrada cadastrado. Verifique!',mtInformation,[mbOK],0);  
+end;
+
+procedure TfrmEntrada.btnCancelarClick(Sender: TObject);
+begin
+  statusBotoesNaoInsercao();
+  limparCampos();
+end;
+
+procedure TfrmEntrada.btnExcluirClick(Sender: TObject);
+begin
+  if cds.RecordCount > 0 then
+    begin
+      CDS.Delete;
+      limparCampos();
+      statusBotoesNaoInsercao();
+    end
+  else
+    MessageDlg('Nenhum registro de entrada cadastrado. Verifique!',mtInformation,[mbOK],0);
+end;
+
+procedure TfrmEntrada.btnFinalizarEntradaClick(Sender: TObject);
+var
+  lista : TObjectList<TEntrada>;
+  entrada : TEntrada;
+  produto : TProduto;
+begin
+
+  if cds.RecordCount = 0 then
+    begin
+      MessageDlg('Nenhum registro de entrada cadastrado. Verifique!',mtInformation,[mbOK],0);
+      Exit;
+    end;
+
+  lista:= TObjectList<TEntrada>.Create;
+  
+  cds.First;
+  
+  try
+    try
+      while not cds.Eof do
+        begin
+          entrada := TEntrada.Create;
+          produto := TProduto.create;
+          produto.id := CDSidProduto.Value;
+          entrada.produto := produto;
+          entrada.dataHora := CDSDataHora.Value;
+          entrada.quantidade := CDSQuantidade.Value;
+          entrada.valorUnitario := CDSValorUnitario.Value;
+
+          lista.Add(entrada);
+          cds.Next;    
+        end;
+        entrada.finalizarEnrada(lista);
+        cds.First;
+        while not cds.Eof do
+         begin
+           cds.Delete;
+         end;
+    except
+     on e : Exception do
+       MessageDlg('Erro!',mtError,[mbOK],0);
+    end;
+  finally
+    FreeAndNil(entrada);
+    FreeAndNil(produto);
+  end;
+
+    MessageDlg('Entrada finalizada com sucesso!!',mtInformation,[mbOK],0);
+end;
+
+procedure TfrmEntrada.btnInserirClick(Sender: TObject);
+begin
+  CadastrarNovo := True;
+  statusBotoesInsercao;
+  limparCampos();
+  edtCodigo.SetFocus;
+  mEData.Text := FormatDateTime('dd/mm/yyyy hh:MM:ss', Now);
+end;
+
+procedure TfrmEntrada.btnPesquisaClick(Sender: TObject);
+begin
+  try
+    frmPesquisaProdutos := TfrmPesquisaProdutos.Create(nil);
+    frmPesquisaProdutos.ShowModal;
+    edtCodigo.Text := IntToStr(T_TransporteDadosForm.FId);
+  finally
+    FreeAndNil(frmPesquisaProdutos);
+  end;
+end;
+
+procedure TfrmEntrada.btnSairClick(Sender: TObject);
+begin
+  close;
+end;
+
+procedure TfrmEntrada.btnSalvarClick(Sender: TObject);
+begin
+  validacaoPadrao();
+  statusBotoesNaoInsercao();
+
+  if CadastrarNovo then  
+    CDS.Append 
+  else
+    CDS.Edit;  
+    
+  CDS.FieldByName('IdProduto').AsInteger := StrToInt(edtCodigo.Text);
+  CDS.FieldByName('NomeProduto').AsString := edtNomeProduto.Text;
+  CDS.FieldByName('DataHora').AsDateTime := StrToDateTime(mEData.Text);
+  CDS.FieldByName('ValorUnitario').AsFloat := StrToFloat(edtVlrUnitario.Text);
+  CDS.FieldByName('Quantidade').AsInteger := StrToInt(edtQuantidade.Text);
+  CDS.FieldByName('ValorTotal').AsFloat := StrToFloat(edtValorTotal.Text);
+  
+  CDS.Post;
+  limparCampos();
+    
+end;
+
+procedure TfrmEntrada.carregaDadosGrid;
+begin
+  edtCodigo.Text := IntToStr(CDSidProduto.Value);
+  edtNomeProduto.Text := CDSNomeProduto.Value;
+  mEData.Text := DateTimeToStr(CDSDataHora.Value);
+  edtVlrUnitario.Text := FloatToStr(CDSValorUnitario.Value);
+  edtQuantidade.Text := IntToStr(CDSQuantidade.Value);
+  edtValorTotal.Text := FloatToStr(CDSValorTotal.Value);
+end;
+
+procedure TfrmEntrada.DBGrid1CellClick(Column: TColumn);
+begin
+  carregaDadosGrid();
+end;
+
+procedure TfrmEntrada.edtCodigoChange(Sender: TObject);
+var
+  produto : TProduto;
+begin
+  inherited;    
+  if edtCodigo.Text <> '' then 
+    begin
+      try
+        produto:= TProduto.create; 
+        try
+          if produto.consultaProdutoId(StrToInt(edtCodigo.Text)).Count > 0 then
+            begin
+              edtNomeProduto.Text := produto.consultaProdutoId(StrToInt(edtCodigo.Text)).Items[0].descricao;
+            end
+          else
+            edtNomeProduto.Text := '';
+        except
+          on e : EConvertError do
+            MessageDlg('Erro de conversão de dados. Verifique!',mtError,[mbOK],0);
+        end;
+      finally
+        FreeAndNil(produto);
+      end;
+    end
+   else 
+      edtNomeProduto.Text := '';
+end;
+
+procedure TfrmEntrada.edtQuantidadeExit(Sender: TObject);
+var
+  vlrTotal : Double;
+begin
+  if (edtQuantidade.Text <> '') and (edtVlrUnitario.Text <> '') then
+    begin
+      try
+        vlrTotal := StrToFloat(edtVlrUnitario.Text) * StrToInt(edtQuantidade.Text);
+        edtValorTotal.Text := FloatToStr(vlrTotal);
+      except
+        on e : Exception do
+          MessageDlg('Erro!',mtError,[mbOK],0);
+      end;
+    end;
+end;
+
+procedure TfrmEntrada.edtVlrUnitarioExit(Sender: TObject);
+var
+  vlrTotal : Double;
+begin
+  if (edtQuantidade.Text <> '') and (edtVlrUnitario.Text <> '') then
+    begin
+      try
+        vlrTotal := StrToFloat(edtVlrUnitario.Text) * StrToInt(edtQuantidade.Text);
+        edtValorTotal.Text := FloatToStr(vlrTotal);
+      except 
+      on e : EConvertError do
+        MessageDlg('Erro de conversão de dados. Verifique!',mtError,[mbOK],0);
+      on e : Exception do                                                     
+        MessageDlg('Erro!',mtError,[mbOK],0);        
+      end;
+    end;    
+end;
+
+procedure TfrmEntrada.FormShow(Sender: TObject);
+begin
+  statusBotoesNaoInsercao;
+  
+end;
+
+procedure TfrmEntrada.limparCampos;
+begin
+  edtCodigo.Text := '';
+  edtNomeProduto.Text := '';
+  edtVlrUnitario.Text := '';
+  edtQuantidade.Text := '';
+  edtValorTotal.Text := '';
+  mEData.Text := '';
+end;
+
+procedure TfrmEntrada.statusBotoesInsercao;
+begin
+  edtCodigo.Enabled        := True;
+  btnPesquisa.DragMode     := dmManual;
+  mEData.Enabled           := True;
+  edtVlrUnitario.Enabled   := True;
+  edtQuantidade.Enabled    := True;
+  edtValorTotal.Enabled    := True;
+  btnInserir.Enabled       := False;
+  btnSalvar.Enabled        := True;
+  btnAlterar.Enabled       := False;
+  btnCancelar.Enabled      := True;
+  btnExcluir.Enabled       := False;
+  btnSair.Enabled          := False;
+end;
+
+procedure TfrmEntrada.statusBotoesNaoInsercao;
+begin
+  edtCodigo.Enabled        := False;
+  btnPesquisa.DragMode     := dmAutomatic;
+  mEData.Enabled           := False;
+  edtVlrUnitario.Enabled   := False;
+  edtQuantidade.Enabled    := False;
+  edtValorTotal.Enabled    := False;  
+  btnInserir.Enabled       := True;
+  btnSalvar.Enabled        := False;
+  btnAlterar.Enabled       := True;
+  btnCancelar.Enabled      := False;
+  btnExcluir.Enabled       := True;
+  btnSair.Enabled          := True; 
+end;
+
+procedure TfrmEntrada.validacaoPadrao;
+begin
+  if (edtCodigo.Text = '') or (edtNomeProduto.Text = '') then
+    begin
+      MessageDlg('Produto não informado!',mtInformation,[mbOK],0);
+      edtCodigo.SetFocus;
+      Abort;
+    end
+  else
+    if mEData.Text = '  /  /    ' then
+      begin
+        MessageDlg('Data e hora não informada!',mtInformation,[mbOK],0);
+        mEData.SetFocus;
+        Abort;      
+      end
+    else
+      if edtVlrUnitario.Text = '' then
+        begin
+          MessageDlg('Valor unitário não informado!',mtInformation,[mbOK],0);
+          edtVlrUnitario.SetFocus;
+          Abort;         
+        end
+      else
+        if edtQuantidade.Text = '' then
+          begin  
+            MessageDlg('Quantidade não informado!',mtInformation,[mbOK],0);
+            edtQuantidade.SetFocus;
+            Abort;          
+          end;      
+end;
+
+end.

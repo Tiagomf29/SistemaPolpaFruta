@@ -1,0 +1,39 @@
+program Principal;
+
+uses
+  Vcl.Forms,
+  UPrincipal in 'UPrincipal.pas' {frmPrincipal},
+  UBaseCadastro in 'UBaseCadastro.pas',
+  UDM in 'UDM.pas' {DM: TDataModule},
+  USabor in 'USabor.pas',
+  UTipoProduto in 'UTipoProduto.pas',
+  UPolpa in 'UPolpa.pas',
+  UTipoValor in 'UTipoValor.pas',
+  UProduto in 'UProduto.pas',
+  UCadastroPadrao in 'UCadastroPadrao.pas' {frmCadastroPadrao},
+  UfrmSabor in 'UfrmSabor.pas' {frmSabor},
+  UfrmTipoProduto in 'UfrmTipoProduto.pas' {frmTipoProduto},
+  UfrmTipoValor in 'UfrmTipoValor.pas' {frmTipoValor},
+  UfrmPolpa in 'UfrmPolpa.pas' {frmPolpa},
+  UPadraoEnumeracao in 'UPadraoEnumeracao.pas',
+  UfrmTipoPolpa in 'UfrmTipoPolpa.pas' {frmTipoPolpa},
+  UValor in 'UValor.pas',
+  UfrmValor in 'UfrmValor.pas' {frmValor},
+  UPesquisaPadrao in 'UPesquisaPadrao.pas' {frmPesquisaPadrao},
+  UGenericRecord in 'UGenericRecord.pas',
+  UfrmProduto in 'UfrmProduto.pas' {frmProduto},
+  UEntrada in 'UEntrada.pas',
+  UEstoque in 'UEstoque.pas',
+  UInterfaceCrud in 'UInterfaceCrud.pas',
+  UFrmEntrada in 'UFrmEntrada.pas' {frmEntrada},
+  Unit1 in 'Unit1.pas' {IWFrame1: TFrame};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TDM, DM);
+  Application.CreateForm(TfrmPrincipal, frmPrincipal);
+  Application.Run;
+end.

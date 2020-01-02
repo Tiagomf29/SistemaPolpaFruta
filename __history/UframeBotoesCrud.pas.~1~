@@ -1,0 +1,30 @@
+unit UframeBotoesCrud;
+
+interface
+
+uses
+  SysUtils, Classes, Controls, Forms,
+  IWVCLBaseContainer, IWColor, IWContainer, IWRegion, Vcl.StdCtrls, Vcl.Buttons,
+  Vcl.ExtCtrls, IWHTMLContainer, IWHTML40Container;
+
+type
+  TIWFrame1 = class(TFrame)
+    IWFrameRegion: TIWRegion;
+    panel1: TPanel;
+    btnSalvar: TBitBtn;
+    btnAlterar: TBitBtn;
+    btnSair: TBitBtn;
+    btnExcluir: TBitBtn;
+    btnCancelar: TBitBtn;
+    btnInserir: TBitBtn;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+implementation
+
+{$R *.dfm}
+
+end.
